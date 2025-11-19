@@ -1,6 +1,6 @@
 # 📝 ToDo Webapp — Schulprojekt (BBS Brinkstraße)
 
-Kurzes, minimalistisches README für das Schulprojekt. Das Projekt ist eine kleine Laravel-basierte ToDo-Webapp. Es wird ein headless setup mit react Komponenten angestrebt.
+Das Projekt ist eine kleine Laravel-basierte ToDo-Webapp. Es wird ein headless laravel mit React Komponenten angestrebt.
 
 ## ⚡️ Setup (lokal mit DDEV)
 1. Starte die Entwicklungsumgebung:

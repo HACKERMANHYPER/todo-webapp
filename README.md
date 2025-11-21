@@ -12,7 +12,7 @@ ddev start
 2. Abhängigkeiten installieren (Composer):
 
 ```bash
-ddev php composer install
+ddev composer install
 ```
 
 3. Datenbankmigrationen ausführen:

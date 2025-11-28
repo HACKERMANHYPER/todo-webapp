@@ -32,6 +32,13 @@ Jetzt sollte die App unter der von DDEV ausgegebenen URL erreichbar sein.
 https://todo-webapp.ddev.site
 ```
 
+5. Das Frontend muss installiert und gebaut werden.
+
+```bash
+ddev npm install
+ddev npm run dev #für den dev modus
+```
+
 ## 🔥 Kurz: Wie benutzen
 - Entwicklungsserver läuft unter der URL, die `ddev start` ausgibt.
 - Assets bauen: im Projektverzeichnis `ddev npm install` und `ddev npm run dev` (falls Node/JS-Assets benötigt werden).

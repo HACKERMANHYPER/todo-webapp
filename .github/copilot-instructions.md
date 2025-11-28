@@ -6,15 +6,16 @@ Max. Länge: ~1 Seite.
 
 # Copilot / Coding-Agent Hinweise — ToDo Webapp (BBS Brinkstraße)
 
-Kurz: Dieses Repository ist eine kleine Laravel-basierte ToDo-Webapp, entwickelt als Schulprojekt. Ziel dieser Datei ist, einem automatisierten Coding-Agenten schnell zu vermitteln, wie er Änderungen zuverlässig bauen, testen und validieren kann, ohne große Erkundungsarbeit.
+Kurz: Dieses Repository ist eine kleine Laravel-basierte ToDo-Webapp mit Inertia.js als Frontend-Monolith, entwickelt als Schulprojekt. Ziel dieser Datei ist, einem automatisierten Coding-Agenten schnell zu vermitteln, wie er Änderungen zuverlässig bauen, testen und validieren kann, ohne große Erkundungsarbeit.
 
-**Projekt-Typ**: PHP (Laravel) + optionale JS-Assets (Vite/NPM)
+**Projekt-Typ**: PHP (Laravel) + Inertia.js (React/Vue-Komponenten) + Vite
 
 **Wichtigste Dateien/Orte**
-- Projekt-Root: `artisan`, `composer.json`, `package.json`, `phpunit.xml`, `README.md`
-- Backend: `app/` (Controller, Models, Providers)
-- Routen: `routes/web.php`
-- Views & Assets: `resources/views`, `resources/js`, `resources/css`
+- Projekt-Root: `artisan`, `composer.json`, `package.json`, `phpunit.xml`, `README.md`, `vite.config.js`
+- Backend: `app/Http/Controllers/` (Controller mit Inertia-Responses), `app/Models/`, `app/Providers/`
+- Routen: `routes/web.php` (definiert Inertia-Seiten/Endpoints)
+- Frontend: `resources/js/Pages/` (React/Vue-Komponenten für Seiten), `resources/js/Components/` (wiederverwendbare Komponenten)
+- Styles: `resources/css/app.css` (Tailwind CSS)
 
 **Schnellstart / empfohlene Reihenfolge (immer befolgen)**
 1. Stelle sicher, dass `ddev` und `Docker` installiert sind.
@@ -23,23 +24,39 @@ Kurz: Dieses Repository ist eine kleine Laravel-basierte ToDo-Webapp, entwickelt
 ```bash
 ddev start
 ddev php composer install
+ddev npm install
 ddev php artisan migrate
 ddev restart    # falls Konfigurationen angepasst wurden
 ```
 
-Anmerkung: Verwende die obigen `ddev`-Befehle — nicht lokale Composer-/PHP-Binaries. Das vermeidet Umgebungsinkompatibilitäten.
+3. Frontend im Entwicklungsmodus starten:
+
+```bash
+ddev npm run dev
+```
+
+Anmerkung: Verwende die obigen `ddev`-Befehle — nicht lokale Composer-/NPM-/PHP-Binaries. Das vermeidet Umgebungsinkompatibilitäten. Der Vite-Dev-Server läuft parallel und wird von Laravel automatisch erfasst.
 
 **Tests & Linting**
 - PHPUnit: `ddev php ./vendor/bin/phpunit`
-- Pint (falls vorhanden): `ddev php ./vendor/bin/pint` oder `ddev php vendor/bin/pint` (prüfe, ob `vendor/bin/pint` existiert)
+- Pint (PHP-Linting): `ddev php ./vendor/bin/pint` (prüfe, ob `vendor/bin/pint` existiert)
 
-**Assets (wenn nötig)**
-- JS/CSS: `ddev npm install` und `ddev npm run dev` bzw. `ddev npm run build`
+**Frontend-Struktur & Inertia.js**
+- **Komponenten**: Alle React/Vue-Komponenten sind in `resources/js/Pages/` (für Seiten) und `resources/js/Components/` (wiederverwendbar) organaisiert.
+- **Backend-Integration**: Controller mit `inertia()->render('ComponentName', $data)` definieren die Frontend-Komponenten und Daten.
+- **Styling**: Tailwind CSS ist bereits konfiguriert (`resources/css/app.css`). Alle Komponenten nutzen dies.
+- **Build**: `ddev npm run dev` für Entwicklung, `ddev npm run build` für Production.
+
+**Assets (immer nötig)**
+- JS/CSS: `ddev npm install` und `ddev npm run dev` (Vite läuft im Hintergrund).
+- Nach neuen Dependencies oder JS-Änderungen: Assets müssen gebaut sein (`npm run dev` oder `npm run build`).
 
 **Build-/Test-Checks vor PR**
 - Alle PHP-Unit-Tests müssen erfolgreich sein (`phpunit`).
 - Sicherstellen, dass Composer-Abhängigkeiten aktualisiert sind (`composer install`).
-- Falls Frontend-Änderungen: Assets bauen und kurz manuell prüfen.
+- Sicherstellen, dass NPM-Abhängigkeiten aktualisiert sind (`npm install`).
+- Assets müssen gebaut sein: `npm run dev` (Entwicklung) oder `npm run build` (Production).
+- Falls Frontend-Änderungen: Komponenten visuell prüfen (z. B. im Browser unter der DDEV-URL).
 
 **CI / GitHub Actions**
 - Dieses Repo enthält keine öffentlichen Workflow-Dateien im `.github/workflows/`-Verzeichnis (Stand dieser Datei). Verifiziere vor Änderungen, ob neue Workflows hinzugekommen sind.
@@ -47,6 +64,8 @@ Anmerkung: Verwende die obigen `ddev`-Befehle — nicht lokale Composer-/PHP-Bin
 **Fehlerquellen / Workarounds (erprobt)**
 - Problem: Abhängigkeiten oder PHP-Versionen weichen lokal von Container ab → Lösung: immer `ddev php composer install` verwenden.
 - Problem: DB-Migration schlägt fehl wegen fehlender Umgebung → Lösung: `ddev restart` und erneut `ddev php artisan migrate`.
+- Problem: Inertia-Komponenten werden nicht angezeigt → Lösung: Stelle sicher, dass `ddev npm run dev` läuft und dass der Komponenten-Pfad in `inertia()->render()` korrekt ist.
+- Problem: Assets/CSS sind nicht aktualisiert → Lösung: Browser-Cache leeren, `ddev npm run dev` neu starten oder `ddev npm run build` verwenden.
 
 **Wann suchen?**
 Vertraue dieser Datei als primären Leitfaden. Nur dann tiefer suchen (grep/Code-Search), wenn:

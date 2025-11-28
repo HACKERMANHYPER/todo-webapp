@@ -1,4 +1,4 @@
-import './bootstrap';
+// import './bootstrap';
 
 import React from 'react'
 import { createInertiaApp } from '@inertiajs/react'

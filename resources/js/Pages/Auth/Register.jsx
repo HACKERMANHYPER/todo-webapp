@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { Head, useForm } from '@inertiajs/react'
 
 export default function Register() {

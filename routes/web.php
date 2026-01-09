@@ -31,10 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('todo-lists', TodoListController::class);
     
     // Nested Todo Ressourcen-Routen (unter TodoList)
-    Route::resource('todo-lists.todos', TodoController::class)->shallow();
-    
-    // API Route für Status-Toggle
-    Route::post('todo-lists/{todoList}/todos/{todo}/toggle-status', [TodoController::class, 'toggleStatus'])
-        ->name('todos.toggle-status');
+    Route::resource('todo-lists.todos', TodoController::class);
 });
 

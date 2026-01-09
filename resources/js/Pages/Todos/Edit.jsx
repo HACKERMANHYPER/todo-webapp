@@ -16,7 +16,12 @@ export default function Edit() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(`/todo-lists/${list.id}/todos/${todo.id}`);
+        put(`/todo-lists/${list.id}/todos/${todo.id}`, {
+            preserveUrl: true,
+            onSuccess: () => {
+                window.location = `/todo-lists/${list.id}/`;
+            }
+        });
     };
 
     return (

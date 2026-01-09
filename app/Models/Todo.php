@@ -31,6 +31,15 @@ class Todo extends Model
         $todo->status = $status ?? 'open';
         $todo->save();
     }
+    public static function editToDo($todo_id, $name, $status)
+    { 
+        $todo = Todo::find($todo_id);
+        if ($todo) {
+            $todo->name = $name;
+            $todo->status = $status;
+            $todo->save();
+        }
+    }
 
     public static function getTodo($list_id)
     {

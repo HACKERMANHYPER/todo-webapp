@@ -90,14 +90,29 @@ class TodoController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'required|in:open,in_progress,completed',
+            'name' => 'nullable|string|max:255',
+            'status' => 'nullable|in:open,in_progress,completed',
         ]);
 
-        $todo->update($validated);
+        // Wenn nur Status gesendet wird (Status-Toggle), wechsle den Status
+        if (!isset($validated['name']) && isset($validated['status'])) {
+            $todo->status = $validated['status'];
+            $todo->save();
+        } else {
+            // Sonst normales Update
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'status' => 'required|in:open,in_progress,completed',
+            ]);
+            Todo::editToDo($todo->id, $validated['name'], $validated['status']);
+        }
 
-        return redirect()->route('todo-lists.show', $todoList)
-            ->with('success', 'Todo aktualisiert.');
+        $todos = Todo::where('list_id', $todoList->id)->get();
+
+        return Inertia::render('TodoLists/Show', [
+            'list' => $todoList,
+            'todos' => $todos,
+        ]);
     }
 
     /**
@@ -115,29 +130,5 @@ class TodoController extends Controller
 
         return redirect()->route('todo-lists.show', $todoList)
             ->with('success', 'Todo gelöscht.');
-    }
-
-    /**
-     * Toggle the status of a Todo (for AJAX requests).
-     */
-    public function toggleStatus(TodoList $todoList, Todo $todo)
-    {
-        $this->authorize('view', $todoList);
-
-        if ($todo->list_id !== $todoList->id) {
-            abort(404);
-        }
-
-        $statuses = ['open', 'in_progress', 'completed'];
-        $currentIndex = array_search($todo->status, $statuses);
-        $nextIndex = ($currentIndex + 1) % count($statuses);
-
-        $todo->status = $statuses[$nextIndex];
-        $todo->save();
-
-        return response()->json([
-            'success' => true,
-            'todo' => $todo,
-        ]);
     }
 }

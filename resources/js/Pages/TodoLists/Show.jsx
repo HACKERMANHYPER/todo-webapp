@@ -1,9 +1,8 @@
-import { Head, Link, usePage, useForm } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function Show() {
     const { list } = usePage().props;
-    const { post } = useForm();
 
     const getIconEmoji = (icon) => {
         const iconMap = {
@@ -42,7 +41,18 @@ export default function Show() {
     };
 
     const handleToggleStatus = (todo) => {
-        post(`/todo-lists/${list.id}/todos/${todo.id}/toggle-status`);
+        const nextStatus = todo.status === 'completed' ? 'open' : 'completed';
+
+        router.put(
+            `/todo-lists/${list.id}/todos/${todo.id}`,
+            { status: nextStatus },
+            {
+                preserveUrl: true,
+                onSuccess: () => {
+                    window.location.reload();
+                }
+            }
+        );
     };
 
     return (
